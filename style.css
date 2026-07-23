@@ -411,12 +411,43 @@ html, body {
   background: var(--bg-secondary);
 }
 
-.stats-row {
+.sidebar-progress-card {
   display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.progress-card-header {
+  display: flex;
+  align-items: center;
   justify-content: space-between;
+}
+
+.progress-card-title {
   font-size: 0.8rem;
-  color: var(--text-secondary);
-  margin-bottom: 0.4rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.progress-card-percent {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--success-color);
+  background: var(--success-light);
+  padding: 0.15rem 0.55rem;
+  border-radius: 12px;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.stats-subrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--text-muted);
 }
 
 .text-btn {

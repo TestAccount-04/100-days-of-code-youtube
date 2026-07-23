@@ -32,6 +32,7 @@
     categoryPills: document.getElementById('category-pills'),
     lessonsList: document.getElementById('lessons-list'),
     statsCompletedCount: document.getElementById('stats-completed-count'),
+    statsPercentCount: document.getElementById('stats-percent-count'),
     sidebarProgressFill: document.getElementById('sidebar-progress-fill'),
     resetProgressBtn: document.getElementById('reset-progress-btn'),
 
@@ -387,6 +388,7 @@
     const percent = Math.round((count / total) * 100);
 
     if (el.statsCompletedCount) el.statsCompletedCount.textContent = count;
+    if (el.statsPercentCount) el.statsPercentCount.textContent = `${percent}%`;
     if (el.sidebarProgressFill) el.sidebarProgressFill.style.width = `${percent}%`;
   }
 

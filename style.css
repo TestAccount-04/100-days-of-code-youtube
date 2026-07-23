@@ -1048,38 +1048,49 @@ mark.custom-hl.hl-pink {
 /* Floating Selection Highlight Toolbar */
 .highlight-toolbar {
   position: fixed;
+  bottom: calc(var(--bottom-bar-height) + 14px);
+  left: 50%;
+  transform: translateX(-50%) translateY(20px) scale(0.92);
   z-index: 500;
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.6rem;
   background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--accent-primary);
+  padding: 0.5rem 0.9rem;
   border-radius: 30px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
   opacity: 0;
   pointer-events: none;
-  transform: translateY(10px) scale(0.95);
   transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28);
 }
 
 .highlight-toolbar.active {
   opacity: 1;
   pointer-events: auto;
-  transform: translateY(0) scale(1);
+  transform: translateX(-50%) translateY(0) scale(1);
+}
+
+.hl-toolbar-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .hl-color-btn {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  border: 2px solid transparent;
+  border: 2px solid rgba(255, 255, 255, 0.2);
   cursor: pointer;
   transition: transform 0.15s ease;
 }
 
 .hl-color-btn:hover, .hl-color-btn:active {
-  transform: scale(1.15);
+  transform: scale(1.2);
+  border-color: #ffffff;
 }
 
 .hl-color-btn.hl-yellow { background-color: #facc15; }
@@ -1088,8 +1099,8 @@ mark.custom-hl.hl-pink {
 .hl-color-btn.hl-pink { background-color: #f472b6; }
 
 .hl-remove-btn {
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   background: var(--bg-tertiary);
   border: 1px solid var(--border-color);
@@ -1102,9 +1113,9 @@ mark.custom-hl.hl-pink {
   transition: transform 0.15s ease;
 }
 
-.hl-remove-btn:hover {
+.hl-remove-btn:hover, .hl-remove-btn:active {
   color: var(--danger-color);
-  transform: scale(1.1);
+  transform: scale(1.15);
 }
 
 

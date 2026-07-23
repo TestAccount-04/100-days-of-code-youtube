@@ -696,6 +696,8 @@
 
   function setupHighlightListeners() {
     document.addEventListener('selectionchange', debounce(handleTextSelection, 200));
+    document.addEventListener('touchend', debounce(handleTextSelection, 250));
+    document.addEventListener('mouseup', debounce(handleTextSelection, 250));
 
     document.querySelectorAll('.hl-color-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
@@ -743,7 +745,7 @@
     if (!sel || sel.isCollapsed) return;
 
     const text = sel.toString().trim();
-    if (!text || text.length < 2) return;
+    if (!text || text.length < 1) return;
 
     if (!el.markdownContainer.contains(sel.anchorNode)) return;
 
@@ -751,30 +753,17 @@
     if (node.closest('code') || node.closest('pre')) return;
 
     activeSelectedText = text;
-    activeTargetMarkId = null;
-
-    try {
-      const range = sel.getRangeAt(0);
-      const rect = range.getBoundingClientRect();
-      if (rect.width > 0) {
-        positionToolbarAtRect(rect);
-      }
-    } catch (e) {}
+    if (el.highlightToolbar) {
+      el.highlightToolbar.classList.add('active');
+    }
   }
 
   function positionToolbarAtRect(rect) {
-    if (!el.highlightToolbar) return;
-    const top = Math.max(10, rect.top - 50);
-    const left = Math.min(window.innerWidth - 180, Math.max(10, rect.left + (rect.width / 2) - 80));
-    
-    el.highlightToolbar.style.top = `${top}px`;
-    el.highlightToolbar.style.left = `${left}px`;
-    el.highlightToolbar.classList.add('active');
+    if (el.highlightToolbar) el.highlightToolbar.classList.add('active');
   }
 
   function positionToolbarAboveElement(elem) {
-    const rect = elem.getBoundingClientRect();
-    positionToolbarAtRect(rect);
+    if (el.highlightToolbar) el.highlightToolbar.classList.add('active');
   }
 
   function hideHighlightToolbar() {

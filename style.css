@@ -1013,4 +1013,99 @@ html, body {
   }
 }
 
+/* Highlighted Text Styles */
+mark.custom-hl {
+  border-radius: 3px;
+  padding: 0.1em 0.2em;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+mark.custom-hl.hl-yellow {
+  background-color: rgba(250, 204, 21, 0.35);
+  color: inherit;
+  border-bottom: 2px solid rgba(250, 204, 21, 0.8);
+}
+
+mark.custom-hl.hl-green {
+  background-color: rgba(74, 222, 128, 0.35);
+  color: inherit;
+  border-bottom: 2px solid rgba(74, 222, 128, 0.8);
+}
+
+mark.custom-hl.hl-cyan {
+  background-color: rgba(56, 189, 248, 0.35);
+  color: inherit;
+  border-bottom: 2px solid rgba(56, 189, 248, 0.8);
+}
+
+mark.custom-hl.hl-pink {
+  background-color: rgba(244, 114, 182, 0.35);
+  color: inherit;
+  border-bottom: 2px solid rgba(244, 114, 182, 0.8);
+}
+
+/* Floating Selection Highlight Toolbar */
+.highlight-toolbar {
+  position: fixed;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  padding: 0.4rem 0.6rem;
+  border-radius: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px) scale(0.95);
+  transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
+.highlight-toolbar.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+
+.hl-color-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.hl-color-btn:hover, .hl-color-btn:active {
+  transform: scale(1.15);
+}
+
+.hl-color-btn.hl-yellow { background-color: #facc15; }
+.hl-color-btn.hl-green { background-color: #4ade80; }
+.hl-color-btn.hl-cyan { background-color: #38bdf8; }
+.hl-color-btn.hl-pink { background-color: #f472b6; }
+
+.hl-remove-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.hl-remove-btn:hover {
+  color: var(--danger-color);
+  transform: scale(1.1);
+}
+
+
 

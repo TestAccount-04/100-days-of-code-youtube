@@ -14,7 +14,8 @@
     selectedCategory: 'all',
     completedDays: new Set(),
     fontSize: 16,
-    theme: 'dark'
+    theme: 'dark',
+    highlights: {} // DayNum -> Array of { id, text, color }
   };
 
   // --- DOM ELEMENTS ---
@@ -72,6 +73,10 @@
     closeTocSheet: document.getElementById('close-toc-sheet'),
     tocList: document.getElementById('toc-list'),
 
+    // Floating Selection Highlight Toolbar
+    highlightToolbar: document.getElementById('highlight-toolbar'),
+    hlRemoveBtn: document.getElementById('hl-remove-btn'),
+
     // Toast Container
     toastContainer: document.getElementById('toast-container'),
     contentArea: document.getElementById('content-area')
@@ -90,6 +95,7 @@
     populateDaySelectDropdown();
     setupEventListeners();
     setupTouchGestures();
+    setupHighlightListeners();
 
     if (state.lessons && state.lessons.length > 0) {
       const found = state.lessons.find(l => l.day === state.currentDay);
@@ -142,6 +148,11 @@
       if (savedFont) {
         state.fontSize = parseInt(savedFont, 10) || 16;
       }
+
+      const savedHl = localStorage.getItem('py100_highlights');
+      if (savedHl) {
+        state.highlights = JSON.parse(savedHl);
+      }
     } catch (e) {
       console.warn("localStorage error:", e);
     }
@@ -156,6 +167,12 @@
   function saveLastDayToStorage(day) {
     try {
       localStorage.setItem('py100_last_day', day);
+    } catch (e) {}
+  }
+
+  function saveHighlightsToStorage() {
+    try {
+      localStorage.setItem('py100_highlights', JSON.stringify(state.highlights));
     } catch (e) {}
   }
 
@@ -302,6 +319,9 @@
     el.markdownContainer.querySelectorAll('pre code').forEach((block) => {
       if (typeof hljs !== 'undefined') hljs.highlightElement(block);
     });
+
+    // Apply Saved Text Highlights
+    applySavedHighlights(dayNum);
 
     // Render Code Tab
     const codeContent = lesson.code && lesson.code.trim() ? lesson.code : '# No code snippet provided in main.py for this day.';
@@ -622,8 +642,205 @@
     }, 2200);
   }
 
-  function escapeHtml(str) {
-    return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  // --- HIGHLIGHTING ENGINE & PERSISTENCE ---
+  let activeSelectedText = '';
+  let activeTargetMarkId = null;
+
+  function applySavedHighlights(dayNum) {
+    const list = state.highlights[dayNum];
+    if (!list || list.length === 0) return;
+
+    list.forEach(hl => {
+      if (hl && hl.text && hl.color && hl.id) {
+        highlightTextInContainer(el.markdownContainer, hl.text, hl.color, hl.id);
+      }
+    });
+  }
+
+  function highlightTextInContainer(container, textToFind, color, id) {
+    if (!container || !textToFind) return;
+
+    const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null, false);
+    let node;
+    const nodesToProcess = [];
+
+    while ((node = walker.nextNode())) {
+      if (node.nodeValue.includes(textToFind) && !node.parentElement.closest('mark.custom-hl') && !node.parentElement.closest('code') && !node.parentElement.closest('pre')) {
+        nodesToProcess.push(node);
+      }
+    }
+
+    nodesToProcess.forEach(textNode => {
+      const parent = textNode.parentNode;
+      if (!parent) return;
+
+      const idx = textNode.nodeValue.indexOf(textToFind);
+      if (idx === -1) return;
+
+      const before = textNode.nodeValue.substring(0, idx);
+      const matched = textNode.nodeValue.substring(idx, idx + textToFind.length);
+      const after = textNode.nodeValue.substring(idx + textToFind.length);
+
+      const fragment = document.createDocumentFragment();
+
+      if (before) fragment.appendChild(document.createTextNode(before));
+
+      const mark = document.createElement('mark');
+      mark.className = `custom-hl hl-${color}`;
+      mark.setAttribute('data-hl-id', id);
+      mark.textContent = matched;
+      fragment.appendChild(mark);
+
+      if (after) fragment.appendChild(document.createTextNode(after));
+
+      parent.replaceChild(fragment, textNode);
+    });
+  }
+
+  function setupHighlightListeners() {
+    document.addEventListener('selectionchange', debounce(handleTextSelection, 200));
+
+    document.querySelectorAll('.hl-color-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const color = btn.getAttribute('data-color');
+        if (activeTargetMarkId) {
+          changeHighlightColor(activeTargetMarkId, color);
+        } else if (activeSelectedText) {
+          createNewHighlight(activeSelectedText, color);
+        }
+        hideHighlightToolbar();
+      });
+    });
+
+    if (el.hlRemoveBtn) {
+      el.hlRemoveBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (activeTargetMarkId) {
+          removeHighlight(activeTargetMarkId);
+        }
+        hideHighlightToolbar();
+      });
+    }
+
+    el.markdownContainer.addEventListener('click', (e) => {
+      const mark = e.target.closest('mark.custom-hl');
+      if (mark) {
+        e.stopPropagation();
+        const id = mark.getAttribute('data-hl-id');
+        activeTargetMarkId = id;
+        activeSelectedText = mark.textContent;
+        positionToolbarAboveElement(mark);
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('#highlight-toolbar') && !e.target.closest('mark.custom-hl')) {
+        hideHighlightToolbar();
+      }
+    });
+  }
+
+  function handleTextSelection() {
+    const sel = window.getSelection();
+    if (!sel || sel.isCollapsed) return;
+
+    const text = sel.toString().trim();
+    if (!text || text.length < 2) return;
+
+    if (!el.markdownContainer.contains(sel.anchorNode)) return;
+
+    const node = sel.anchorNode.nodeType === 1 ? sel.anchorNode : sel.anchorNode.parentElement;
+    if (node.closest('code') || node.closest('pre')) return;
+
+    activeSelectedText = text;
+    activeTargetMarkId = null;
+
+    try {
+      const range = sel.getRangeAt(0);
+      const rect = range.getBoundingClientRect();
+      if (rect.width > 0) {
+        positionToolbarAtRect(rect);
+      }
+    } catch (e) {}
+  }
+
+  function positionToolbarAtRect(rect) {
+    if (!el.highlightToolbar) return;
+    const top = Math.max(10, rect.top - 50);
+    const left = Math.min(window.innerWidth - 180, Math.max(10, rect.left + (rect.width / 2) - 80));
+    
+    el.highlightToolbar.style.top = `${top}px`;
+    el.highlightToolbar.style.left = `${left}px`;
+    el.highlightToolbar.classList.add('active');
+  }
+
+  function positionToolbarAboveElement(elem) {
+    const rect = elem.getBoundingClientRect();
+    positionToolbarAtRect(rect);
+  }
+
+  function hideHighlightToolbar() {
+    if (el.highlightToolbar) {
+      el.highlightToolbar.classList.remove('active');
+    }
+    activeTargetMarkId = null;
+  }
+
+  function createNewHighlight(text, color) {
+    const dayNum = state.currentDay;
+    if (!state.highlights[dayNum]) state.highlights[dayNum] = [];
+
+    const id = 'hl_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
+    const hlObj = { id, text, color };
+
+    state.highlights[dayNum].push(hlObj);
+    saveHighlightsToStorage();
+
+    highlightTextInContainer(el.markdownContainer, text, color, id);
+    if (window.getSelection()) window.getSelection().removeAllRanges();
+    showToast("Highlight saved!", "success");
+  }
+
+  function changeHighlightColor(id, newColor) {
+    const dayNum = state.currentDay;
+    const list = state.highlights[dayNum];
+    if (!list) return;
+
+    const item = list.find(h => h.id === id);
+    if (item) {
+      item.color = newColor;
+      saveHighlightsToStorage();
+
+      document.querySelectorAll(`mark[data-hl-id="${id}"]`).forEach(m => {
+        m.className = `custom-hl hl-${newColor}`;
+      });
+      showToast("Color updated");
+    }
+  }
+
+  function removeHighlight(id) {
+    const dayNum = state.currentDay;
+    if (state.highlights[dayNum]) {
+      state.highlights[dayNum] = state.highlights[dayNum].filter(h => h.id !== id);
+      saveHighlightsToStorage();
+    }
+
+    document.querySelectorAll(`mark[data-hl-id="${id}"]`).forEach(m => {
+      const text = m.textContent;
+      const textNode = document.createTextNode(text);
+      m.parentNode.replaceChild(textNode, m);
+    });
+
+    showToast("Highlight removed");
+  }
+
+  function debounce(func, wait) {
+    let timeout;
+    return function (...args) {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(this, args), wait);
+    };
   }
 
   document.addEventListener('DOMContentLoaded', init);

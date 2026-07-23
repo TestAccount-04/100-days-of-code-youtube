@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>100 Days of Code - Python Reader</title>
   
-  <!-- Meta tags -->
+  <!-- PWA Manifest & Meta -->
+  <link rel="manifest" href="manifest.json">
   <meta name="description" content="Mobile-friendly 100 Days of Code Python Reader">
   <meta name="theme-color" content="#0b0f19">
   
@@ -14,11 +15,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
   
-  <!-- Highlight.js Theme -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css" id="hljs-theme">
+  <!-- Local Highlight.js Theme -->
+  <link rel="stylesheet" href="lib/highlight.min.css" id="hljs-theme">
   
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Local Lucide Icons -->
+  <script src="lib/lucide.min.js"></script>
   
   <!-- Custom Styles -->
   <link rel="stylesheet" href="style.css">
@@ -241,11 +242,23 @@
   <!-- Toast Notification Container -->
   <div class="toast-container" id="toast-container"></div>
 
-  <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+  <!-- Scripts (100% Offline Compatible) -->
+  <script src="lib/marked.min.js"></script>
+  <script src="lib/highlight.min.js"></script>
   <script src="lessons_data.js"></script>
   <script src="app.js"></script>
+
+  <!-- PWA Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').then((reg) => {
+          console.log('Offline PWA Service Worker registered:', reg.scope);
+        }).catch((err) => {
+          console.warn('Service Worker registration failed:', err);
+        });
+      });
+    }
+  </script>
 </body>
 </html>

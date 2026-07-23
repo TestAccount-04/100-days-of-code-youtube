@@ -599,13 +599,6 @@
     state.theme = theme;
     document.documentElement.setAttribute('data-theme', theme);
     try { localStorage.setItem('py100_theme', theme); } catch (e) {}
-
-    const hljsStyle = document.getElementById('hljs-theme');
-    if (hljsStyle) {
-      hljsStyle.href = (theme === 'light')
-        ? "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css"
-        : "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css";
-    }
   }
 
   function applyFontSize(size) {

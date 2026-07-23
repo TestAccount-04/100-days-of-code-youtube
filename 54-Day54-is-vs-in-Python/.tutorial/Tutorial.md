@@ -34,4 +34,3 @@ In these cases, a and b are both pointing to the same object in memory, so is an
 For mutable objects such as lists and dictionaries, is and == can behave differently. In general, you should use == when you want to compare the values of two objects, and use is when you want to check if two objects are the same object in memory.
 
 I hope this helps clarify the difference between is and == in Python!
-## [Next Lesson>>](https://replit.com/@codewithharry/55-Day55-Exercise-5)

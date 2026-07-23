@@ -35,4 +35,3 @@ In this example, we send a POST request to a web service to authenticate a user.
 
 ## bs4 Module
 There is another module called BeautifulSoup which is used for web scraping in Python. I have personally used bs4 module to finish a lot of freelancing task.
-## [Next Lesson>>](https://replit.com/@codewithharry/90-Day-90-Exercise-10)

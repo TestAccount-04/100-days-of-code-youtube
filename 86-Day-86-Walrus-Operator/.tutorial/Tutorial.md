@@ -50,5 +50,3 @@ In this example, the user input is assigned to the variable `name` using the Wal
 It is important to note that the Walrus Operator should be used sparingly as it can make code less readable if overused.
 
 In conclusion, the Walrus Operator is a useful tool for Python developers to have in their toolkit. It can help streamline code and reduce duplication, but it should be used with care to ensure code readability and maintainability.
-
-## [Next Lesson>>](https://replit.com/@codewithharry/87-Day-87-Shutil-Module)

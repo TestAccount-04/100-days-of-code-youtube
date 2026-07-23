@@ -68,4 +68,3 @@ print(info.items())
 ```
 dict_items([('name', 'Karan'), ('age', 19), ('eligible', True)])
 ```
-## [Next Lesson>>](https://replit.com/@codewithharry/34-Day34-Dictionary-Methods)

@@ -24,4 +24,3 @@ Another benefit of function caching is that it can simplify the code of a progra
 
 ## Conclusion
 Function caching is a technique for improving the performance of a program by storing the results of a function so that you can reuse the results instead of recomputing them every time the function is called. In Python 3, function caching can be achieved using the `functools.lru_cache` decorator, which provides an easy and efficient way to cache the results of a function. Whether you're writing a computationally expensive program, or just want to simplify your code, function caching is a great technique to have in your toolbox.
-## [Next Lesson>>](https://replit.com/@codewithharry/93-Day-93-Exercise-10-Solution)

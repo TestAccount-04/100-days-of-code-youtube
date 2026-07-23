@@ -27,4 +27,3 @@ iteration no 5 in for loop
 else block in loop
 Out of loop
 ```
-## [Next Lesson>>](https://replit.com/@codewithharry/36-Day36-Exception-Handling)

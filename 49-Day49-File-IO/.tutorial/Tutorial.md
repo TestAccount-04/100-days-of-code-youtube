@@ -65,4 +65,3 @@ with open('myfile.txt', 'r') as f:
     # ... do something with the file
 
 ```
-## [Next Lesson>>](https://replit.com/@codewithharry/50-Day50-read-readlines-and-other-methods)

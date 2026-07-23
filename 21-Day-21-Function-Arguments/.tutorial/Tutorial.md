@@ -115,5 +115,3 @@ Output:
 ```
 Hello, James Buchanan Barnes
 ```
-## [Next Lesson>>](https://replit.com/@codewithharry/22-Day-22-Introduction-to-Lists)
-

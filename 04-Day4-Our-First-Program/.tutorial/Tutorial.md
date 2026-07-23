@@ -14,5 +14,3 @@ print("---Your poem here---")
 ```
 
 Please make sure you attempt this. Might be easy for some of you but please finish each and every task
-
-## [Next Lesson>>](https://replit.com/@codewithharry/05-Day5-Comments-and-Print#main.py)

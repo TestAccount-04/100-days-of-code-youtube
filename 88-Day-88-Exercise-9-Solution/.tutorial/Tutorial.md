@@ -10,4 +10,3 @@ Shoutout to Nishant
 Shoutout to Harry
 ```
 Note: If you are not using windows, try to figure out how to do the same thing using some other package
-## [Next Lesson>>](https://replit.com/@codewithharry/89-Day-89-Requests-Module)

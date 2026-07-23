@@ -51,4 +51,3 @@ In this example, we used the global keyword to declare that we want to modify th
 It's important to note that it's generally considered good practice to avoid modifying global variables from within functions, as it can lead to unexpected behavior and make your code harder to debug.
 
 I hope this tutorial has helped clarify the differences between local and global variables and how to use the global keyword in Python. Thank you for watching!
-## [Next Lesson>>](https://replit.com/@codewithharry/49-Day49-File-IO)

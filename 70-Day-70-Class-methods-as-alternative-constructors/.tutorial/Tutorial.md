@@ -54,4 +54,3 @@ Now you can create a square rectangle like this:
 ```python
 rectangle = Rectangle.square(10)
 ```
-## [Next Lesson>>](https://replit.com/@codewithharry/71-Day-71-dir-dict-and-help-methods)

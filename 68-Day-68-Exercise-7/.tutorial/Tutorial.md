@@ -5,4 +5,3 @@ You should use os module to rename all the png images from 1.png all the way til
 - this.png --> 3.png
 - design.png --> 4.png
 - name.png --> 5.png
-## [Next Lesson>>](https://replit.com/@codewithharry/69-Day-69-Class-Methods)

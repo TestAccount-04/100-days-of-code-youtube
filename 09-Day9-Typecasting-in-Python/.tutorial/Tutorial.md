@@ -51,5 +51,3 @@ print(type(c))
 10.0
 <class 'float'>
 ```
-
-## [Next Lesson>>](https://replit.com/@codewithharry/10-Day10-Taking-User-Input#main.py`)

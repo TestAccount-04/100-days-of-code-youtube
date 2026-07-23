@@ -11,5 +11,3 @@ I then learnt flask and got to work with Flask with a university professor abroa
 
 I want to show you some python programs I created which will surely inspire you to create your own versions of the same as we progress through this tutorial. 
 Do not try to recreate them just yet if you are a beginner and just started working on Python. We will make progress gradually trust me
-
-## [Next Lesson>>](https://replit.com/@codewithharry/03-Day3-Modules-and-Pip#main.py)

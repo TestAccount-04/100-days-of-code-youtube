@@ -33,4 +33,3 @@ for line in lines:
 f.close()
 ```
 It is also a good practice to close the file after you are done with it.
-## [Next Lesson>>](https://replit.com/@codewithharry/51-Day51-seek-and-tell-functions)

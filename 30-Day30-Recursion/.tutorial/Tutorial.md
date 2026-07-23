@@ -22,4 +22,3 @@ print("Factorial: ",factorial(num))
 number:  7
 Factorial:  5040
 ```
-## [Next Lesson>>](https://replit.com/@codewithharry/31-Day31-Sets)

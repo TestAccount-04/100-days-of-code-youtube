@@ -76,4 +76,3 @@ print(output)  # Output: ['myfile.txt', 'otherfile.txt']
 f.close()
 ```
 In summary, the os module in Python is a built-in library that provides a wide variety of functions for interacting with the operating system. It allows you to perform tasks such as reading and writing files, interacting with the file system, and running system commands.
-## [Next Lesson>>](https://replit.com/@codewithharry/47-Day47-Exercise-4-Solution)

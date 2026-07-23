@@ -38,4 +38,3 @@ lambda x, y: print(f'{x} * {y} = {x * y}')
 In the above example, the lambda function includes a print statement, but it is still limited to a single expression.
 
 Lambda functions are often used in conjunction with higher-order functions, such as map, filter, and reduce which we will look into later.
-## [Next Lesson>>](https://replit.com/@codewithharry/53-Day53-Map-Filter-and-Reduce)

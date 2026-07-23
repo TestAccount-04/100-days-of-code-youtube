@@ -25,4 +25,3 @@ except CustomError:
 ```
 
 This is useful because sometimes we might want to do something when a particular exception is raised. For example, sending an error report to the admin, calling an api, etc.
-## [Next Lesson>>](https://replit.com/@codewithharry/39-Day39-Exercise-3-Solution)

@@ -34,5 +34,3 @@ This 100 days of code series will help you learn python from starting to the end
 - Replit is very easy to share tutorials and code.
 - You can easily fork this repl and continue learning in your own style. Video, code as well as text tutorial on the same page which makes things easy!
 - For fellow teachers out there, you create a .tutorial folder to create tutorials using replit.
-
-## [Next Lesson>>](https://replit.com/@codewithharry/02-Day2-Application-of-Python#.tutorial/Tutorial.md)

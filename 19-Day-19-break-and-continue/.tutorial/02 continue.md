@@ -16,4 +16,3 @@ for i in [2,3,4,6,8,0]:
 0
 
 ```
-## [Next Lesson>>](https://replit.com/@codewithharry/20-Day20-Functions)

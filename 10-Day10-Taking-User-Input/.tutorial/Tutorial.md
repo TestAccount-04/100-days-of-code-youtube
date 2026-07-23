@@ -22,4 +22,3 @@ print(a)
 Enter the name: Harry
 Harry
 ```
-## [Next Lesson>>](https://replit.com/@codewithharry/11-Day11-Strings#main.py)

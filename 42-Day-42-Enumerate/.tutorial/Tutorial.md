@@ -70,4 +70,3 @@ for index, c in enumerate(s):
     print(index, c)
 
 ```
-## [Next Lesson>>](https://replit.com/@codewithharry/43-Day43-Virtual-Environment)

@@ -68,4 +68,3 @@ print(dir(math))
 This will output a list of all the names defined in the math module, including functions like sqrt and pi, as well as other variables and constants.
 
 In summary, the import statement in Python allows you to access the functions and variables defined in a module from within your current script. You can import the entire module, specific functions or variables, or use the * wildcard to import everything. You can also use the as keyword to rename a module, and the dir function to view the contents of a module.
-## [Next Lesson>>](https://replit.com/@codewithharry/45-Day45-if-name-main-in-Python)

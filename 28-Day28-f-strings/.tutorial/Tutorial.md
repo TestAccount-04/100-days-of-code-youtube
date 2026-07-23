@@ -32,4 +32,3 @@ print(f"{2 * 30})"
 ```
 60
 ```
-## [Next Lesson>>](https://replit.com/@codewithharry/29-Day29-Docstrings)

@@ -164,5 +164,3 @@ else:
 #### Output:
 
 Carla is present.
-
-## [Next Lesson>>](https://replit.com/@codewithharry/33-Day-33-Dictionary)

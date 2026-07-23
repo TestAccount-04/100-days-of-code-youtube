@@ -23,4 +23,3 @@ Enter a positive number: -1
 ```
 ## Explanation
 This loop uses True as its formal condition. This trick turns the loop into an infinite loop. Before the conditional statement, the loop runs all the required processing and updates the breaking condition. If this condition evaluates to true, then the break statement breaks out of the loop, and the program execution continues its normal path.
-## [Next Lesson>>](https://replit.com/@codewithharry/19-Day-19-break-and-continue)

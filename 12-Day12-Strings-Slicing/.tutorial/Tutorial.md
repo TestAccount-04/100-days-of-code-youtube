@@ -58,5 +58,3 @@ C
 D
 E
 ```
-
-## [Next Lesson>>](https://replit.com/@codewithharry/13-Day13-String-Methods)

@@ -118,5 +118,3 @@ print(object(s), sep=separator, end=end, file=file, flush=flush)
 4. file: An object with a write method. Default is sys.stdout
 
 Parameters 2 to 4 are optional
-
-## [Next Lesson>>](https://replit.com/@codewithharry/06-Day6-Variables-and-Data-Types)

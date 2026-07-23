@@ -44,4 +44,3 @@ Output:
 ```
 Hello, Sam Wilson
 ```
-## [Next Lesson>>](https://replit.com/@codewithharry/21-Day-21-Function-Arguments)

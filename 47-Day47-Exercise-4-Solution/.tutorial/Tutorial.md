@@ -41,5 +41,3 @@ else:
       nwords.append(word[::-1])
   print(" ".join(nwords))
 ```
-  
-## [Next Lesson>>](https://replit.com/@codewithharry/48-Day48-local-vs-global-variables)

@@ -908,11 +908,98 @@ html, body {
   min-height: 36px;
 }
 
+.sheet-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.sheet-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sheet-section-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.selection-preview-box {
+  background: var(--bg-tertiary);
+  border: 1px dashed var(--border-color);
+  border-radius: 8px;
+  padding: 0.6rem 0.85rem;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  max-height: 60px;
+  overflow-y: auto;
+  line-height: 1.4;
+}
+
+.selected-text-muted {
+  color: var(--text-muted);
+  font-style: italic;
+  font-size: 0.8rem;
+}
+
+.color-palette-grid {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.color-pick-btn {
+  flex: 1;
+  min-width: 68px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.color-pick-btn:hover, .color-pick-btn:active {
+  border-color: var(--accent-primary);
+  background: var(--accent-light);
+}
+
+.color-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.color-dot.yellow { background-color: #facc15; }
+.color-dot.green { background-color: #4ade80; }
+.color-dot.cyan { background-color: #38bdf8; }
+.color-dot.pink { background-color: #f472b6; }
+
+.sheet-divider {
+  border: none;
+  border-top: 1px solid var(--border-subtle);
+  margin: 0.25rem 0;
+}
+
 .font-slider-wrapper {
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 0.5rem 0;
+  padding: 0.25rem 0;
 }
 
 .font-slider-wrapper input[type="range"] {

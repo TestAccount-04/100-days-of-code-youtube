@@ -198,20 +198,55 @@
 
   </div>
 
-  <!-- Bottom Drawer Sheet: Text Size Settings -->
+  <!-- Bottom Drawer Sheet: Text & Highlight Tools -->
   <div class="bottom-sheet" id="font-bottom-sheet">
     <div class="sheet-content">
       <div class="sheet-header">
-        <span class="sheet-title"><i data-lucide="type"></i> Reading Font Size</span>
+        <span class="sheet-title"><i data-lucide="sliders"></i> Text & Highlight Tools</span>
         <button class="sheet-close-btn" id="close-font-sheet">&times;</button>
       </div>
       <div class="sheet-body">
-        <div class="font-slider-wrapper">
-          <span class="slider-min">A</span>
-          <input type="range" id="font-range-slider" min="14" max="22" value="16" step="1">
-          <span class="slider-max">A</span>
+        
+        <!-- Section 1: Highlight Selected Text -->
+        <div class="sheet-section">
+          <div class="sheet-section-title"><i data-lucide="highlighter"></i> Highlight Selected Text</div>
+          
+          <div class="selection-preview-box" id="selection-preview-box">
+            <span id="selected-text-display" class="selected-text-muted">No text selected. Select any word or line in tutorial!</span>
+          </div>
+
+          <div class="color-palette-grid">
+            <button class="color-pick-btn hl-pick-yellow" data-color="yellow">
+              <span class="color-dot yellow"></span> Yellow
+            </button>
+            <button class="color-pick-btn hl-pick-green" data-color="green">
+              <span class="color-dot green"></span> Green
+            </button>
+            <button class="color-pick-btn hl-pick-cyan" data-color="cyan">
+              <span class="color-dot cyan"></span> Cyan
+            </button>
+            <button class="color-pick-btn hl-pick-pink" data-color="pink">
+              <span class="color-dot pink"></span> Pink
+            </button>
+            <button class="color-pick-btn hl-pick-remove" id="drawer-hl-remove-btn">
+              <i data-lucide="trash-2"></i> Clear
+            </button>
+          </div>
         </div>
-        <div class="font-val-label" id="font-size-val-display">16px (Default)</div>
+
+        <hr class="sheet-divider">
+
+        <!-- Section 2: Reading Font Size -->
+        <div class="sheet-section">
+          <div class="sheet-section-title"><i data-lucide="type"></i> Reading Font Size</div>
+          <div class="font-slider-wrapper">
+            <span class="slider-min">A</span>
+            <input type="range" id="font-range-slider" min="14" max="22" value="16" step="1">
+            <span class="slider-max">A</span>
+          </div>
+          <div class="font-val-label" id="font-size-val-display">16px (Default)</div>
+        </div>
+
       </div>
     </div>
   </div>

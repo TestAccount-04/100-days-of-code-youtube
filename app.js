@@ -72,6 +72,8 @@
     closeFontSheet: document.getElementById('close-font-sheet'),
     fontRangeSlider: document.getElementById('font-range-slider'),
     fontSizeValDisplay: document.getElementById('font-size-val-display'),
+    selectedTextDisplay: document.getElementById('selected-text-display'),
+    drawerHlRemoveBtn: document.getElementById('drawer-hl-remove-btn'),
 
     tocBottomSheet: document.getElementById('toc-bottom-sheet'),
     closeTocSheet: document.getElementById('close-toc-sheet'),
@@ -699,6 +701,7 @@
     document.addEventListener('touchend', debounce(handleTextSelection, 250));
     document.addEventListener('mouseup', debounce(handleTextSelection, 250));
 
+    // Handle floating toolbar color buttons
     document.querySelectorAll('.hl-color-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -712,6 +715,21 @@
       });
     });
 
+    // Handle bottom drawer color picker buttons
+    document.querySelectorAll('.color-pick-btn[data-color]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const color = btn.getAttribute('data-color');
+        if (activeTargetMarkId) {
+          changeHighlightColor(activeTargetMarkId, color);
+        } else if (activeSelectedText) {
+          createNewHighlight(activeSelectedText, color);
+        } else {
+          showToast("Select any text in tutorial first!", "info");
+        }
+      });
+    });
+
     if (el.hlRemoveBtn) {
       el.hlRemoveBtn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -722,6 +740,17 @@
       });
     }
 
+    if (el.drawerHlRemoveBtn) {
+      el.drawerHlRemoveBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (activeTargetMarkId) {
+          removeHighlight(activeTargetMarkId);
+        } else {
+          showToast("Select a highlight to remove", "info");
+        }
+      });
+    }
+
     el.markdownContainer.addEventListener('click', (e) => {
       const mark = e.target.closest('mark.custom-hl');
       if (mark) {
@@ -729,12 +758,13 @@
         const id = mark.getAttribute('data-hl-id');
         activeTargetMarkId = id;
         activeSelectedText = mark.textContent;
+        updateSelectedTextDisplay(activeSelectedText);
         positionToolbarAboveElement(mark);
       }
     });
 
     document.addEventListener('click', (e) => {
-      if (!e.target.closest('#highlight-toolbar') && !e.target.closest('mark.custom-hl')) {
+      if (!e.target.closest('#highlight-toolbar') && !e.target.closest('mark.custom-hl') && !e.target.closest('#font-bottom-sheet')) {
         hideHighlightToolbar();
       }
     });
@@ -742,7 +772,12 @@
 
   function handleTextSelection() {
     const sel = window.getSelection();
-    if (!sel || sel.isCollapsed) return;
+    if (!sel || sel.isCollapsed) {
+      if (!activeTargetMarkId && !activeSelectedText) {
+        updateSelectedTextDisplay('');
+      }
+      return;
+    }
 
     const text = sel.toString().trim();
     if (!text || text.length < 1) return;
@@ -753,8 +788,22 @@
     if (node.closest('code') || node.closest('pre')) return;
 
     activeSelectedText = text;
+    activeTargetMarkId = null;
+    updateSelectedTextDisplay(text);
+
     if (el.highlightToolbar) {
       el.highlightToolbar.classList.add('active');
+    }
+  }
+
+  function updateSelectedTextDisplay(text) {
+    if (!el.selectedTextDisplay) return;
+    if (text) {
+      el.selectedTextDisplay.className = '';
+      el.selectedTextDisplay.textContent = `"${text.length > 50 ? text.substring(0, 50) + '...' : text}"`;
+    } else {
+      el.selectedTextDisplay.className = 'selected-text-muted';
+      el.selectedTextDisplay.textContent = 'No text selected. Select any word or line in tutorial!';
     }
   }
 

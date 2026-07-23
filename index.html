@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Python 100 Days of Code - Interactive Reader</title>
+  <title>100 Days of Code - Python Reader</title>
   
-  <!-- Meta tags for SEO & Mobile PWA -->
-  <meta name="description" content="Read and practice Python 100 Days of Code theory and code snippets with interactive reader, search, dark mode, and progress tracking.">
-  <meta name="theme-color" content="#0f172a">
+  <!-- Meta tags -->
+  <meta name="description" content="Mobile-friendly 100 Days of Code Python Reader">
+  <meta name="theme-color" content="#0b0f19">
   
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
   
   <!-- Highlight.js Theme -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css" id="hljs-theme">
@@ -25,66 +25,50 @@
 </head>
 <body>
 
-  <!-- Reading Progress Bar -->
+  <!-- Top Reading Progress Indicator Line -->
   <div id="reading-progress-container">
     <div id="reading-progress-bar"></div>
   </div>
 
-  <!-- Mobile Sidebar Backdrop Overlay -->
+  <!-- Mobile Sidebar Overlay Backdrop -->
   <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
-  <!-- Main Layout Wrapper -->
+  <!-- Bottom Sheet Overlay Backdrop -->
+  <div class="sheet-overlay" id="sheet-overlay"></div>
+
+  <!-- App Wrapper -->
   <div class="app-layout">
 
-    <!-- Top Navbar -->
+    <!-- 1. Top App Bar (56px Fixed) -->
     <header class="app-header">
       <div class="header-left">
-        <button class="icon-btn mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle Navigation Menu">
+        <button class="icon-btn mobile-menu-btn" id="mobile-menu-btn" aria-label="Open Menu">
           <i data-lucide="menu"></i>
         </button>
-        <a href="#" class="brand-logo">
-          <div class="logo-icon"><i data-lucide="code-2"></i></div>
-          <div class="logo-text">
-            <span class="brand-title">Python 100 Days</span>
-            <span class="brand-subtitle">Interactive Reader</span>
-          </div>
-        </a>
+        <div class="brand-title">100 Days of Code</div>
       </div>
 
-      <!-- Quick Day Jump & Global Controls -->
-      <div class="header-actions">
-        <!-- Quick Jump Input -->
-        <div class="day-jump-container">
-          <label for="day-jump-input" class="sr-only">Jump to day</label>
-          <span class="day-jump-prefix">Day</span>
-          <input type="number" id="day-jump-input" min="1" max="100" placeholder="1" aria-label="Jump to day number">
-          <button class="jump-go-btn" id="jump-go-btn">Go</button>
+      <div class="header-right">
+        <!-- Day Picker Dropdown -->
+        <div class="day-picker-select-wrapper">
+          <select id="day-select-dropdown" class="day-select-dropdown" aria-label="Select Day">
+            <!-- Dynamically populated by JS -->
+          </select>
+          <i data-lucide="chevron-down" class="select-arrow-icon"></i>
         </div>
 
-        <!-- Font Size Controls -->
-        <div class="font-controls desktop-only">
-          <button class="icon-btn sm" id="font-decrease-btn" title="Decrease Text Size" aria-label="Decrease text size">A-</button>
-          <button class="icon-btn sm" id="font-increase-btn" title="Increase Text Size" aria-label="Increase text size">A+</button>
-        </div>
-
-        <!-- Theme Switcher -->
-        <button class="icon-btn theme-toggle-btn" id="theme-toggle-btn" title="Toggle Theme" aria-label="Toggle dark/light mode">
+        <!-- Theme Toggle Button -->
+        <button class="icon-btn theme-toggle-btn" id="theme-toggle-btn" aria-label="Toggle Theme">
           <i data-lucide="sun" class="sun-icon"></i>
           <i data-lucide="moon" class="moon-icon"></i>
         </button>
-
-        <!-- Progress Badge -->
-        <div class="header-progress-badge" id="header-progress-badge" title="Overall Progress">
-          <i data-lucide="check-circle-2"></i>
-          <span id="progress-percent-text">0%</span>
-        </div>
       </div>
     </header>
 
-    <!-- Main Container (Sidebar + Content) -->
+    <!-- Main Workspace -->
     <div class="main-body">
 
-      <!-- Sidebar / Mobile Drawer -->
+      <!-- Left Sidebar / Drawer -->
       <aside class="app-sidebar" id="app-sidebar">
         <div class="sidebar-header">
           <div class="search-box">
@@ -93,7 +77,7 @@
             <button class="clear-search-btn" id="clear-search-btn" aria-label="Clear Search">&times;</button>
           </div>
 
-          <!-- Category Filter Pills -->
+          <!-- Category Pills -->
           <div class="category-pills" id="category-pills">
             <button class="cat-pill active" data-cat="all">All</button>
             <button class="cat-pill" data-cat="Basics & Conditionals">Basics</button>
@@ -105,17 +89,17 @@
         </div>
 
         <!-- Lessons Scrollable List -->
-        <div class="lessons-list-container" id="lessons-list-container">
+        <div class="lessons-list-container">
           <ul class="lessons-list" id="lessons-list">
             <!-- Dynamic items rendered by app.js -->
           </ul>
         </div>
 
-        <!-- Sidebar Footer Stats -->
+        <!-- Sidebar Stats Footer -->
         <div class="sidebar-footer">
           <div class="stats-row">
             <span>Completed: <strong id="stats-completed-count">0</strong> / 100</span>
-            <button class="text-btn danger" id="reset-progress-btn" title="Reset Reading Progress">Reset</button>
+            <button class="text-btn danger" id="reset-progress-btn">Reset</button>
           </div>
           <div class="progress-bar-track">
             <div class="progress-bar-fill" id="sidebar-progress-fill" style="width: 0%;"></div>
@@ -123,110 +107,121 @@
         </div>
       </aside>
 
-      <!-- Content Viewer Area -->
+      <!-- Content Reader Viewport -->
       <main class="content-area" id="content-area">
 
-        <!-- Lesson Header Card -->
-        <div class="lesson-header-card">
-          <div class="lesson-meta-top">
-            <span class="day-badge" id="lesson-day-badge">Day 1</span>
-            <span class="category-badge" id="lesson-category-badge">Basics</span>
-            <button class="mark-done-btn" id="mark-done-btn">
-              <i data-lucide="check"></i>
-              <span id="mark-done-text">Mark Completed</span>
+        <!-- 2. Sticky Segmented Tab Switcher (Theory vs Code) -->
+        <div class="sticky-tab-bar">
+          <div class="segmented-control">
+            <button class="tab-btn active" id="tab-theory-btn" data-tab="theory">
+              <i data-lucide="book-open"></i> <span>Theory</span>
+            </button>
+            <button class="tab-btn" id="tab-code-btn" data-tab="code">
+              <i data-lucide="terminal"></i> <span>Code (main.py)</span>
             </button>
           </div>
-
-          <h1 class="lesson-main-title" id="lesson-main-title">Day 1 - Introduction to Python</h1>
-          <p class="lesson-folder-path" id="lesson-folder-path"><i data-lucide="folder"></i> 01-Day1-Intro-to-Python</p>
-
-          <!-- Tab Bar & TOC Toggle -->
-          <div class="content-toolbar">
-            <div class="tab-buttons">
-              <button class="tab-btn active" data-tab="theory" id="tab-theory-btn">
-                <i data-lucide="book-open"></i> Theory
-              </button>
-              <button class="tab-btn" data-tab="code" id="tab-code-btn">
-                <i data-lucide="terminal"></i> Code (main.py)
-              </button>
-            </div>
-
-            <div class="toolbar-right-actions">
-              <!-- Outline/TOC Button -->
-              <button class="icon-text-btn sm" id="toc-toggle-btn">
-                <i data-lucide="list-tree"></i> Outline
-              </button>
-              
-              <!-- Text Sizing (Mobile viewable) -->
-              <div class="font-controls mobile-only">
-                <button class="icon-btn sm" id="font-decrease-btn-mobile">A-</button>
-                <button class="icon-btn sm" id="font-increase-btn-mobile">A+</button>
-              </div>
-            </div>
-          </div>
         </div>
 
-        <!-- Floating Table of Contents Popover/Drawer -->
-        <div class="toc-popover" id="toc-popover">
-          <div class="toc-popover-header">
-            <h3><i data-lucide="list"></i> Lesson Outline</h3>
-            <button class="icon-btn sm" id="toc-close-btn" aria-label="Close outline">&times;</button>
-          </div>
-          <div class="toc-list" id="toc-list">
-            <!-- Dynamic TOC headings rendered by app.js -->
-          </div>
-        </div>
-
-        <!-- Main Document Body -->
-        <div class="lesson-body-wrapper">
+        <!-- Article Reader Workspace -->
+        <div class="article-workspace">
           
-          <!-- Theory View Tab -->
+          <!-- Category & Day Subheader Badge -->
+          <div class="lesson-meta-line">
+            <span class="meta-badge" id="lesson-day-badge">DAY 1</span>
+            <span class="meta-dot">•</span>
+            <span class="meta-cat" id="lesson-category-badge">BASICS</span>
+          </div>
+
+          <!-- Theory Content Pane -->
           <div class="tab-pane active" id="pane-theory">
             <article class="markdown-body" id="markdown-container">
-              <!-- Rendered markdown content -->
+              <!-- Rendered tutorial markdown -->
             </article>
           </div>
 
-          <!-- Code View Tab -->
+          <!-- Code Content Pane (main.py) -->
           <div class="tab-pane" id="pane-code">
             <div class="code-viewer-container">
               <div class="code-viewer-header">
-                <span class="file-name"><i data-lucide="file-code-2"></i> main.py</span>
+                <span class="file-name"><i data-lucide="file-code"></i> main.py</span>
                 <button class="copy-code-btn" id="copy-main-code-btn">
                   <i data-lucide="copy"></i> Copy Code
                 </button>
               </div>
-              <pre><code class="language-python" id="main-code-block"># No code available for this day</code></pre>
+              <pre><code class="language-python" id="main-code-block"># Python code snippet</code></pre>
             </div>
           </div>
+
+          <!-- Bottom Prev / Next Day Navigation -->
+          <nav class="lesson-nav-bar" aria-label="Lesson navigation">
+            <button class="nav-btn nav-prev-btn" id="nav-prev-btn">
+              <i data-lucide="chevron-left"></i>
+              <span>Prev Day</span>
+            </button>
+            <span class="nav-day-text" id="nav-day-text">Day 1 of 100</span>
+            <button class="nav-btn nav-next-btn" id="nav-next-btn">
+              <span>Next Day</span>
+              <i data-lucide="chevron-right"></i>
+            </button>
+          </nav>
 
         </div>
 
-        <!-- Bottom Lesson Navigation Bar -->
-        <nav class="lesson-nav-bar" aria-label="Lesson navigation">
-          <button class="nav-prev-btn" id="nav-prev-btn">
-            <i data-lucide="chevron-left"></i>
-            <div class="nav-btn-text">
-              <span class="nav-label">Previous</span>
-              <span class="nav-title" id="prev-day-title">Day 1</span>
-            </div>
-          </button>
-
-          <div class="nav-day-indicator" id="nav-day-indicator">
-            Day <strong id="indicator-current">1</strong> of 100
-          </div>
-
-          <button class="nav-next-btn" id="nav-next-btn">
-            <div class="nav-btn-text">
-              <span class="nav-label">Next</span>
-              <span class="nav-title" id="next-day-title">Day 2</span>
-            </div>
-            <i data-lucide="chevron-right"></i>
-          </button>
-        </nav>
-
       </main>
 
+    </div>
+
+    <!-- 3. Fixed Bottom Action Bar (Mobile Sticky CTA) -->
+    <div class="sticky-bottom-bar">
+      <div class="bottom-actions-left">
+        <button class="bottom-action-btn" id="font-drawer-btn" aria-label="Text Size Settings">
+          <span class="btn-aa-text">Aa</span>
+          <span class="btn-label">Text</span>
+        </button>
+        <button class="bottom-action-btn" id="toc-toggle-btn" aria-label="Lesson Outline">
+          <i data-lucide="list"></i>
+          <span class="btn-label">Outline</span>
+        </button>
+      </div>
+
+      <button class="mark-done-btn-bottom" id="mark-done-btn">
+        <i data-lucide="check-circle-2"></i>
+        <span id="mark-done-text">Mark Complete</span>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Bottom Drawer Sheet: Text Size Settings -->
+  <div class="bottom-sheet" id="font-bottom-sheet">
+    <div class="sheet-content">
+      <div class="sheet-header">
+        <span class="sheet-title"><i data-lucide="type"></i> Reading Font Size</span>
+        <button class="sheet-close-btn" id="close-font-sheet">&times;</button>
+      </div>
+      <div class="sheet-body">
+        <div class="font-slider-wrapper">
+          <span class="slider-min">A</span>
+          <input type="range" id="font-range-slider" min="14" max="22" value="16" step="1">
+          <span class="slider-max">A</span>
+        </div>
+        <div class="font-val-label" id="font-size-val-display">16px (Default)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Drawer Sheet: Table of Contents Outline -->
+  <div class="bottom-sheet" id="toc-bottom-sheet">
+    <div class="sheet-content">
+      <div class="sheet-header">
+        <span class="sheet-title"><i data-lucide="list-tree"></i> Lesson Outline</span>
+        <button class="sheet-close-btn" id="close-toc-sheet">&times;</button>
+      </div>
+      <div class="sheet-body">
+        <div class="toc-list" id="toc-list">
+          <!-- Dynamic TOC item list -->
+        </div>
+      </div>
     </div>
   </div>
 
@@ -234,17 +229,10 @@
   <div class="toast-container" id="toast-container"></div>
 
   <!-- Scripts -->
-  <!-- Marked.js Markdown Renderer -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  
-  <!-- Highlight.js Code Syntax Highlighting -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
-
-  <!-- Generated Data File -->
   <script src="lessons_data.js"></script>
-
-  <!-- Main Application Script -->
   <script src="app.js"></script>
 </body>
 </html>

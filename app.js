@@ -1,12 +1,10 @@
 /**
- * Python 100 Days of Code - Interactive Web Application
- * Mobile-First Responsive Reader & Progress Tracker
+ * Python 100 Days of Code - Mobile-First Interactive Engine
  */
 
 (function () {
   'use strict';
 
-  // --- APP STATE ---
   // --- APP STATE ---
   const state = {
     lessons: (typeof LESSONS_DATA !== 'undefined' ? LESSONS_DATA : (window.LESSONS_DATA || [])),
@@ -21,21 +19,12 @@
 
   // --- DOM ELEMENTS ---
   const el = {
-    // Header & Navigation
+    // Header
     mobileMenuBtn: document.getElementById('mobile-menu-btn'),
     sidebarOverlay: document.getElementById('sidebar-overlay'),
     appSidebar: document.getElementById('app-sidebar'),
     themeToggleBtn: document.getElementById('theme-toggle-btn'),
-    headerProgressBadge: document.getElementById('header-progress-badge'),
-    progressPercentText: document.getElementById('progress-percent-text'),
-    dayJumpInput: document.getElementById('day-jump-input'),
-    jumpGoBtn: document.getElementById('jump-go-btn'),
-
-    // Font Controls
-    fontDecreaseBtn: document.getElementById('font-decrease-btn'),
-    fontIncreaseBtn: document.getElementById('font-increase-btn'),
-    fontDecreaseMobile: document.getElementById('font-decrease-btn-mobile'),
-    fontIncreaseMobile: document.getElementById('font-increase-btn-mobile'),
+    daySelectDropdown: document.getElementById('day-select-dropdown'),
 
     // Sidebar
     searchInput: document.getElementById('sidebar-search-input'),
@@ -46,15 +35,11 @@
     sidebarProgressFill: document.getElementById('sidebar-progress-fill'),
     resetProgressBtn: document.getElementById('reset-progress-btn'),
 
-    // Lesson Viewer Header
+    // Workspace & Meta Badges
     lessonDayBadge: document.getElementById('lesson-day-badge'),
     lessonCategoryBadge: document.getElementById('lesson-category-badge'),
-    lessonMainTitle: document.getElementById('lesson-main-title'),
-    lessonFolderPath: document.getElementById('lesson-folder-path'),
-    markDoneBtn: document.getElementById('mark-done-btn'),
-    markDoneText: document.getElementById('mark-done-text'),
 
-    // Toolbar & Tabs
+    // Tabs
     tabTheoryBtn: document.getElementById('tab-theory-btn'),
     tabCodeBtn: document.getElementById('tab-code-btn'),
     paneTheory: document.getElementById('pane-theory'),
@@ -63,19 +48,28 @@
     mainCodeBlock: document.getElementById('main-code-block'),
     copyMainCodeBtn: document.getElementById('copy-main-code-btn'),
 
-    // TOC Popover
-    tocToggleBtn: document.getElementById('toc-toggle-btn'),
-    tocPopover: document.getElementById('toc-popover'),
-    tocCloseBtn: document.getElementById('toc-close-btn'),
-    tocList: document.getElementById('toc-list'),
-
-    // Bottom Navigation Bar
+    // Bottom Navigation
     navPrevBtn: document.getElementById('nav-prev-btn'),
     navNextBtn: document.getElementById('nav-next-btn'),
-    prevDayTitle: document.getElementById('prev-day-title'),
-    nextDayTitle: document.getElementById('next-day-title'),
-    indicatorCurrent: document.getElementById('indicator-current'),
+    navDayText: document.getElementById('nav-day-text'),
     readingProgressBar: document.getElementById('reading-progress-bar'),
+
+    // Sticky Bottom Bar
+    fontDrawerBtn: document.getElementById('font-drawer-btn'),
+    tocToggleBtn: document.getElementById('toc-toggle-btn'),
+    markDoneBtn: document.getElementById('mark-done-btn'),
+    markDoneText: document.getElementById('mark-done-text'),
+
+    // Bottom Sheet Drawers & Overlays
+    sheetOverlay: document.getElementById('sheet-overlay'),
+    fontBottomSheet: document.getElementById('font-bottom-sheet'),
+    closeFontSheet: document.getElementById('close-font-sheet'),
+    fontRangeSlider: document.getElementById('font-range-slider'),
+    fontSizeValDisplay: document.getElementById('font-size-val-display'),
+
+    tocBottomSheet: document.getElementById('toc-bottom-sheet'),
+    closeTocSheet: document.getElementById('close-toc-sheet'),
+    tocList: document.getElementById('toc-list'),
 
     // Toast Container
     toastContainer: document.getElementById('toast-container'),
@@ -86,17 +80,16 @@
   function init() {
     loadLocalStorage();
     
-    // Ensure lessons data is populated
     if ((!state.lessons || state.lessons.length === 0)) {
       if (typeof LESSONS_DATA !== 'undefined') state.lessons = LESSONS_DATA;
       else if (window.LESSONS_DATA) state.lessons = window.LESSONS_DATA;
     }
 
     configureMarked();
+    populateDaySelectDropdown();
     setupEventListeners();
     setupTouchGestures();
-    
-    // Determine initial day to show
+
     if (state.lessons && state.lessons.length > 0) {
       const found = state.lessons.find(l => l.day === state.currentDay);
       if (!found) state.currentDay = state.lessons[0].day;
@@ -108,10 +101,22 @@
     applyTheme(state.theme);
     applyFontSize(state.fontSize);
 
-    // Re-initialize Lucide Icons
     if (window.lucide) {
       window.lucide.createIcons();
     }
+  }
+
+  // --- POPULATE DAY DROPDOWN ---
+  function populateDaySelectDropdown() {
+    if (!el.daySelectDropdown) return;
+    el.daySelectDropdown.innerHTML = '';
+    
+    state.lessons.forEach(l => {
+      const opt = document.createElement('option');
+      opt.value = l.day;
+      opt.textContent = `Day ${l.day}`;
+      el.daySelectDropdown.appendChild(opt);
+    });
   }
 
   // --- LOCAL STORAGE HELPERS ---
@@ -119,8 +124,7 @@
     try {
       const savedCompleted = localStorage.getItem('py100_completed');
       if (savedCompleted) {
-        const arr = JSON.parse(savedCompleted);
-        state.completedDays = new Set(arr);
+        state.completedDays = new Set(JSON.parse(savedCompleted));
       }
 
       const savedDay = localStorage.getItem('py100_last_day');
@@ -138,7 +142,7 @@
         state.fontSize = parseInt(savedFont, 10) || 16;
       }
     } catch (e) {
-      console.warn("Could not load from localStorage:", e);
+      console.warn("localStorage error:", e);
     }
   }
 
@@ -159,7 +163,6 @@
     if (typeof marked !== 'undefined') {
       const renderer = new marked.Renderer();
 
-      // Custom code block renderer compatible with marked v4 - v12
       renderer.code = function (code, lang) {
         let textVal = '';
         let language = 'python';
@@ -195,51 +198,36 @@
         } else if (typeof marked.setOptions === 'function') {
           marked.setOptions({ renderer: renderer, gfm: true, breaks: true });
         }
-      } catch (e) {
-        console.warn("Marked setup warning:", e);
-      }
+      } catch (e) {}
     }
   }
 
-  // Global helper for code snippet copy
   window.copyCodeSnippet = function (btn) {
     const codeBlock = btn.closest('.code-block-wrapper').querySelector('code');
     if (codeBlock) {
-      const text = codeBlock.textContent;
-      navigator.clipboard.writeText(text).then(() => {
+      navigator.clipboard.writeText(codeBlock.textContent).then(() => {
         showToast("Code copied to clipboard!", "success");
-      }).catch(() => {
-        showToast("Failed to copy code", "error");
       });
     }
   };
 
-  // --- RENDER SIDEBAR LESSONS LIST ---
+  // --- RENDER SIDEBAR ---
   function renderSidebar() {
     el.lessonsList.innerHTML = '';
 
     const filtered = state.lessons.filter(item => {
-      // Category filter
       if (state.selectedCategory !== 'all' && item.category !== state.selectedCategory) {
         return false;
       }
-      // Search query filter
       if (state.searchQuery) {
         const q = state.searchQuery.toLowerCase();
-        const matchDay = `day ${item.day}`.includes(q) || `${item.day}` === q;
-        const matchTitle = item.title.toLowerCase().includes(q);
-        const matchFolder = item.folder.toLowerCase().includes(q);
-        return matchDay || matchTitle || matchFolder;
+        return `day ${item.day}`.includes(q) || `${item.day}` === q || item.title.toLowerCase().includes(q) || item.folder.toLowerCase().includes(q);
       }
       return true;
     });
 
     if (filtered.length === 0) {
-      el.lessonsList.innerHTML = `
-        <li style="padding: 1.5rem; text-align: center; color: var(--text-muted); font-size: 0.85rem;">
-          No matching days found.
-        </li>
-      `;
+      el.lessonsList.innerHTML = `<li style="padding: 1.5rem; text-align: center; color: var(--text-muted); font-size: 0.85rem;">No matching days found.</li>`;
       return;
     }
 
@@ -281,12 +269,10 @@
     state.currentDay = dayNum;
     saveLastDayToStorage(dayNum);
 
-    // Update Header Card Metadata
-    el.lessonDayBadge.textContent = `Day ${lesson.day}`;
-    el.lessonCategoryBadge.textContent = lesson.category;
-    el.lessonMainTitle.textContent = lesson.title;
-    el.lessonFolderPath.innerHTML = `<i data-lucide="folder"></i> ${escapeHtml(lesson.folder)}`;
-    el.dayJumpInput.value = lesson.day;
+    // Update Header Select Dropdown & Badges
+    if (el.daySelectDropdown) el.daySelectDropdown.value = dayNum;
+    el.lessonDayBadge.textContent = `DAY ${lesson.day}`;
+    el.lessonCategoryBadge.textContent = lesson.category.toUpperCase();
 
     // Mark Done Button state
     const isDone = state.completedDays.has(lesson.day);
@@ -295,42 +281,39 @@
       el.markDoneText.textContent = 'Completed';
     } else {
       el.markDoneBtn.classList.remove('completed');
-      el.markDoneText.textContent = 'Mark Completed';
+      el.markDoneText.textContent = 'Mark Complete';
     }
 
-    // Render Markdown Theory
+    // Render Markdown Theory (prevent duplicate H1)
+    let rawTutorial = lesson.tutorial || '*No theory tutorial available for this day.*';
+
     try {
       if (typeof marked !== 'undefined' && typeof marked.parse === 'function') {
-        el.markdownContainer.innerHTML = marked.parse(lesson.tutorial || '*No theory tutorial available for this day.*');
+        el.markdownContainer.innerHTML = marked.parse(rawTutorial);
       } else {
-        el.markdownContainer.textContent = lesson.tutorial;
+        el.markdownContainer.textContent = rawTutorial;
       }
     } catch (err) {
-      console.warn("Markdown parse error:", err);
-      el.markdownContainer.innerText = lesson.tutorial || '';
+      el.markdownContainer.innerText = rawTutorial;
     }
 
-    // Highlight all code blocks in tutorial
+    // Highlight Code Blocks
     el.markdownContainer.querySelectorAll('pre code').forEach((block) => {
-      if (typeof hljs !== 'undefined') {
-        hljs.highlightElement(block);
-      }
+      if (typeof hljs !== 'undefined') hljs.highlightElement(block);
     });
 
-    // Render Main.py Code Tab
+    // Render Code Tab
     const codeContent = lesson.code && lesson.code.trim() ? lesson.code : '# No code snippet provided in main.py for this day.';
     el.mainCodeBlock.textContent = codeContent;
-    if (typeof hljs !== 'undefined') {
-      hljs.highlightElement(el.mainCodeBlock);
-    }
+    if (typeof hljs !== 'undefined') hljs.highlightElement(el.mainCodeBlock);
 
     // Build Table of Contents
     buildTableOfContents();
 
-    // Update Bottom Prev / Next Nav
+    // Update Bottom Nav
     updateNavButtons(dayNum);
 
-    // Update Sidebar active item
+    // Update Sidebar active state
     document.querySelectorAll('.lesson-item').forEach(item => {
       const d = parseInt(item.getAttribute('data-day'), 10);
       if (d === dayNum) {
@@ -341,12 +324,10 @@
       }
     });
 
-    // Re-initialize Lucide Icons for rendered content
     if (window.lucide) {
       window.lucide.createIcons();
     }
 
-    // Scroll to top of content
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -356,15 +337,12 @@
     const headings = el.markdownContainer.querySelectorAll('h1, h2, h3');
 
     if (headings.length === 0) {
-      el.tocList.innerHTML = '<span style="font-size:0.8rem; color:var(--text-muted); padding:0.5rem;">No sections found.</span>';
+      el.tocList.innerHTML = '<span style="font-size:0.85rem; color:var(--text-muted); padding:0.5rem;">No outline headings found.</span>';
       return;
     }
 
     headings.forEach((heading, idx) => {
-      // Assign ID if missing
-      if (!heading.id) {
-        heading.id = `heading-${idx}`;
-      }
+      if (!heading.id) heading.id = `heading-${idx}`;
 
       const a = document.createElement('a');
       a.className = `toc-item level-${heading.tagName.charAt(1)}`;
@@ -374,42 +352,24 @@
       a.addEventListener('click', (e) => {
         e.preventDefault();
         heading.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        el.tocPopover.classList.remove('active');
+        closeBottomSheets();
       });
 
       el.tocList.appendChild(a);
     });
   }
 
-  // --- UPDATE PREV / NEXT NAVIGATION ---
+  // --- UPDATE PREV / NEXT NAV ---
   function updateNavButtons(dayNum) {
     const index = state.lessons.findIndex(l => l.day === dayNum);
     
-    // Prev Button
-    if (index > 0) {
-      const prevLesson = state.lessons[index - 1];
-      el.navPrevBtn.disabled = false;
-      el.navPrevBtn.style.opacity = '1';
-      el.prevDayTitle.textContent = `Day ${prevLesson.day}`;
-    } else {
-      el.navPrevBtn.disabled = true;
-      el.navPrevBtn.style.opacity = '0.4';
-      el.prevDayTitle.textContent = 'None';
-    }
+    el.navPrevBtn.disabled = (index <= 0);
+    el.navPrevBtn.style.opacity = (index <= 0) ? '0.4' : '1';
 
-    // Next Button
-    if (index < state.lessons.length - 1) {
-      const nextLesson = state.lessons[index + 1];
-      el.navNextBtn.disabled = false;
-      el.navNextBtn.style.opacity = '1';
-      el.nextDayTitle.textContent = `Day ${nextLesson.day}`;
-    } else {
-      el.navNextBtn.disabled = true;
-      el.navNextBtn.style.opacity = '0.4';
-      el.nextDayTitle.textContent = 'None';
-    }
+    el.navNextBtn.disabled = (index >= state.lessons.length - 1);
+    el.navNextBtn.style.opacity = (index >= state.lessons.length - 1) ? '0.4' : '1';
 
-    el.indicatorCurrent.textContent = dayNum;
+    el.navDayText.textContent = `Day ${dayNum} of ${state.lessons.length}`;
   }
 
   // --- DAY SELECTION HANDLER ---
@@ -417,8 +377,6 @@
     const target = state.lessons.find(l => l.day === dayNum);
     if (target) {
       renderLesson(dayNum);
-    } else {
-      showToast(`Day ${dayNum} not found`, "error");
     }
   }
 
@@ -428,32 +386,19 @@
     const total = 100;
     const percent = Math.round((count / total) * 100);
 
-    el.statsCompletedCount.textContent = count;
-    el.sidebarProgressFill.style.width = `${percent}%`;
-    el.progressPercentText.textContent = `${percent}%`;
+    if (el.statsCompletedCount) el.statsCompletedCount.textContent = count;
+    if (el.sidebarProgressFill) el.sidebarProgressFill.style.width = `${percent}%`;
   }
 
   // --- EVENT LISTENERS ---
   function setupEventListeners() {
-    // Mobile menu toggle
+    // Mobile Drawer
     el.mobileMenuBtn.addEventListener('click', toggleMobileSidebar);
     el.sidebarOverlay.addEventListener('click', closeMobileSidebar);
 
-    // Day Jump Input
-    el.jumpGoBtn.addEventListener('click', () => {
-      const val = parseInt(el.dayJumpInput.value, 10);
-      if (val >= 1 && val <= 100) {
-        selectDay(val);
-      }
-    });
-
-    el.dayJumpInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        const val = parseInt(el.dayJumpInput.value, 10);
-        if (val >= 1 && val <= 100) {
-          selectDay(val);
-        }
-      }
+    // Day Select Dropdown
+    el.daySelectDropdown.addEventListener('change', (e) => {
+      selectDay(parseInt(e.target.value, 10));
     });
 
     // Mark Done Button
@@ -483,18 +428,15 @@
       }
     });
 
-    // Tab Switching
+    // Tabs Switch
     el.tabTheoryBtn.addEventListener('click', () => switchTab('theory'));
     el.tabCodeBtn.addEventListener('click', () => switchTab('code'));
 
     // Search Input
     el.searchInput.addEventListener('input', (e) => {
       state.searchQuery = e.target.value;
-      if (state.searchQuery) {
-        el.clearSearchBtn.classList.add('show');
-      } else {
-        el.clearSearchBtn.classList.remove('show');
-      }
+      if (state.searchQuery) el.clearSearchBtn.classList.add('show');
+      else el.clearSearchBtn.classList.remove('show');
       renderSidebar();
     });
 
@@ -516,13 +458,10 @@
       }
     });
 
-    // Copy Main.py Code
+    // Copy Code
     el.copyMainCodeBtn.addEventListener('click', () => {
-      const codeText = el.mainCodeBlock.textContent;
-      navigator.clipboard.writeText(codeText).then(() => {
+      navigator.clipboard.writeText(el.mainCodeBlock.textContent).then(() => {
         showToast("Code copied to clipboard!", "success");
-      }).catch(() => {
-        showToast("Failed to copy code", "error");
       });
     });
 
@@ -532,42 +471,30 @@
       applyTheme(state.theme);
     });
 
-    // Font Controls
-    const incFont = () => applyFontSize(state.fontSize + 1);
-    const decFont = () => applyFontSize(state.fontSize - 1);
+    // Bottom Sheet Drawers (Font & TOC)
+    el.fontDrawerBtn.addEventListener('click', openFontSheet);
+    el.tocToggleBtn.addEventListener('click', openTocSheet);
+    el.closeFontSheet.addEventListener('click', closeBottomSheets);
+    el.closeTocSheet.addEventListener('click', closeBottomSheets);
+    el.sheetOverlay.addEventListener('click', closeBottomSheets);
 
-    el.fontIncreaseBtn.addEventListener('click', incFont);
-    el.fontDecreaseBtn.addEventListener('click', decFont);
-    el.fontIncreaseMobile.addEventListener('click', incFont);
-    el.fontDecreaseMobile.addEventListener('click', decFont);
-
-    // TOC Toggle
-    el.tocToggleBtn.addEventListener('click', () => {
-      el.tocPopover.classList.toggle('active');
-    });
-    el.tocCloseBtn.addEventListener('click', () => {
-      el.tocPopover.classList.remove('active');
+    // Font Range Slider
+    el.fontRangeSlider.addEventListener('input', (e) => {
+      const val = parseInt(e.target.value, 10);
+      applyFontSize(val);
     });
 
-    // Prev / Next Navigation Buttons
+    // Nav Buttons
     el.navPrevBtn.addEventListener('click', () => navigateDay(-1));
     el.navNextBtn.addEventListener('click', () => navigateDay(1));
 
     // Keyboard Shortcuts
     document.addEventListener('keydown', (e) => {
-      if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
-
-      if (e.key === 'ArrowLeft') {
-        navigateDay(-1);
-      } else if (e.key === 'ArrowRight') {
-        navigateDay(1);
-      } else if (e.key === '/') {
-        e.preventDefault();
-        el.searchInput.focus();
-      }
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
+      if (e.key === 'ArrowLeft') navigateDay(-1);
+      else if (e.key === 'ArrowRight') navigateDay(1);
     });
 
-    // Scroll Progress Bar Update
     window.addEventListener('scroll', updateReadingProgress);
   }
 
@@ -586,14 +513,9 @@
     }, { passive: true });
 
     function handleSwipe() {
-      const threshold = 70; // Minimum swipe distance in px
-      if (touchEndX < touchStartX - threshold) {
-        // Swipe Left -> Next Day
-        navigateDay(1);
-      } else if (touchEndX > touchStartX + threshold) {
-        // Swipe Right -> Prev Day
-        navigateDay(-1);
-      }
+      const threshold = 70;
+      if (touchEndX < touchStartX - threshold) navigateDay(1);
+      else if (touchEndX > touchStartX + threshold) navigateDay(-1);
     }
   }
 
@@ -633,39 +555,50 @@
     el.sidebarOverlay.classList.remove('active');
   }
 
+  function openFontSheet() {
+    closeBottomSheets();
+    el.fontBottomSheet.classList.add('active');
+    el.sheetOverlay.classList.add('active');
+  }
+
+  function openTocSheet() {
+    closeBottomSheets();
+    el.tocBottomSheet.classList.add('active');
+    el.sheetOverlay.classList.add('active');
+  }
+
+  function closeBottomSheets() {
+    el.fontBottomSheet.classList.remove('active');
+    el.tocBottomSheet.classList.remove('active');
+    el.sheetOverlay.classList.remove('active');
+  }
+
   function applyTheme(theme) {
     state.theme = theme;
     document.documentElement.setAttribute('data-theme', theme);
-    try {
-      localStorage.setItem('py100_theme', theme);
-    } catch (e) {}
+    try { localStorage.setItem('py100_theme', theme); } catch (e) {}
 
-    // Update highlight.js theme stylesheet
     const hljsStyle = document.getElementById('hljs-theme');
     if (hljsStyle) {
-      if (theme === 'light') {
-        hljsStyle.href = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css";
-      } else {
-        hljsStyle.href = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css";
-      }
+      hljsStyle.href = (theme === 'light')
+        ? "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css"
+        : "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css";
     }
   }
 
   function applyFontSize(size) {
-    if (size < 12 || size > 24) return;
     state.fontSize = size;
     el.markdownContainer.style.fontSize = `${size}px`;
-    try {
-      localStorage.setItem('py100_fontsize', size);
-    } catch (e) {}
+    if (el.fontRangeSlider) el.fontRangeSlider.value = size;
+    if (el.fontSizeValDisplay) el.fontSizeValDisplay.textContent = `${size}px (${size === 16 ? 'Default' : size < 16 ? 'Smaller' : 'Larger'})`;
+    try { localStorage.setItem('py100_fontsize', size); } catch (e) {}
   }
 
   function updateReadingProgress() {
     const scrollTop = window.scrollY || document.documentElement.scrollTop;
     const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
     if (docHeight > 0) {
-      const progress = (scrollTop / docHeight) * 100;
-      el.readingProgressBar.style.width = `${Math.min(progress, 100)}%`;
+      el.readingProgressBar.style.width = `${Math.min((scrollTop / docHeight) * 100, 100)}%`;
     } else {
       el.readingProgressBar.style.width = '0%';
     }
@@ -674,27 +607,23 @@
   function showToast(message, type = 'info') {
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
-    const icon = type === 'success' ? 'check-circle-2' : type === 'error' ? 'alert-circle' : 'info';
+    const icon = type === 'success' ? 'check-circle-2' : 'info';
     toast.innerHTML = `<i data-lucide="${icon}"></i> ${escapeHtml(message)}`;
 
     el.toastContainer.appendChild(toast);
-
-    if (window.lucide) {
-      window.lucide.createIcons();
-    }
+    if (window.lucide) window.lucide.createIcons();
 
     setTimeout(() => {
       toast.style.opacity = '0';
-      toast.style.transform = 'translateY(10px)';
-      setTimeout(() => toast.remove(), 300);
-    }, 2500);
+      toast.style.transform = 'translateY(15px)';
+      setTimeout(() => toast.remove(), 250);
+    }, 2200);
   }
 
   function escapeHtml(str) {
     return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
-  // --- BOOTSTRAP APP ---
   document.addEventListener('DOMContentLoaded', init);
 
 })();

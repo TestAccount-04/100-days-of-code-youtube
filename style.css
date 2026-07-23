@@ -967,3 +967,38 @@ html, body {
     transform: translateX(0);
   }
 }
+
+/* Floating Theme Toggle (Right Bottom Pop-up FAB) */
+.floating-theme-toggle {
+  position: fixed;
+  bottom: calc(var(--bottom-bar-height) + 14px);
+  right: 14px;
+  z-index: 180;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28), background var(--transition-fast);
+}
+
+.floating-theme-toggle:active {
+  transform: scale(0.88);
+}
+
+.floating-theme-toggle:hover {
+  background: var(--accent-light);
+  border-color: var(--accent-primary);
+}
+
+.floating-theme-toggle .sun-icon { display: none; }
+.floating-theme-toggle .moon-icon { display: block; }
+[data-theme="light"] .floating-theme-toggle .sun-icon { display: block; }
+[data-theme="light"] .floating-theme-toggle .moon-icon { display: none; }
+

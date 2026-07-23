@@ -5,6 +5,10 @@
 (function () {
   'use strict';
 
+  function escapeHtml(str) {
+    return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
   // --- APP STATE ---
   const state = {
     lessons: (typeof LESSONS_DATA !== 'undefined' ? LESSONS_DATA : (window.LESSONS_DATA || [])),

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'py100-v1';
+const CACHE_NAME = 'py100-v2';
 const ASSETS = [
   './',
   './index.html',
@@ -12,17 +12,15 @@ const ASSETS = [
   './lib/lucide.min.js'
 ];
 
-// Install Event - Pre-cache all static assets
 self.addEventListener('install', (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log('[ServiceWorker] Pre-caching offline assets');
       return cache.addAll(ASSETS);
-    }).then(() => self.skipWaiting())
+    })
   );
 });
 
-// Activate Event - Clean old caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
@@ -37,25 +35,24 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch Event - Serve from Cache first, fallback to network
+// Network-First Strategy: Fetch latest updates from network first, fall back to offline cache
 self.addEventListener('fetch', (event) => {
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        return cachedResponse;
-      }
-      return fetch(event.request).then((networkResponse) => {
-        return caches.open(CACHE_NAME).then((cache) => {
-          // Cache new requests dynamically
-          if (event.request.method === 'GET' && networkResponse.status === 200) {
-            cache.put(event.request, networkResponse.clone());
-          }
-          return networkResponse;
+    fetch(event.request).then((networkResponse) => {
+      if (event.request.method === 'GET' && networkResponse.status === 200) {
+        const responseClone = networkResponse.clone();
+        caches.open(CACHE_NAME).then((cache) => {
+          cache.put(event.request, responseClone);
         });
-      });
+      }
+      return networkResponse;
     }).catch(() => {
-      // Offline fallback if needed
-      return caches.match('./index.html');
+      return caches.match(event.request).then((cachedResponse) => {
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+        return caches.match('./index.html');
+      });
     })
   );
 });

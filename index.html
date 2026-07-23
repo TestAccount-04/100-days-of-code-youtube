@@ -71,6 +71,21 @@
       <!-- Left Sidebar / Drawer -->
       <aside class="app-sidebar" id="app-sidebar">
         <div class="sidebar-header">
+          <!-- Top Course Progress Card -->
+          <div class="sidebar-progress-card">
+            <div class="progress-card-header">
+              <span class="progress-card-title"><i data-lucide="trophy"></i> Course Progress</span>
+              <span class="progress-card-percent" id="stats-percent-count">0%</span>
+            </div>
+            <div class="progress-bar-track">
+              <div class="progress-bar-fill" id="sidebar-progress-fill" style="width: 0%;"></div>
+            </div>
+            <div class="stats-subrow">
+              <span class="stats-text"><strong id="stats-completed-count">0</strong> of 100 Days Completed</span>
+              <button class="text-btn danger" id="reset-progress-btn">Reset</button>
+            </div>
+          </div>
+
           <div class="search-box">
             <i data-lucide="search" class="search-icon"></i>
             <input type="text" id="sidebar-search-input" placeholder="Search days, topics..." aria-label="Search lessons">
@@ -93,23 +108,6 @@
           <ul class="lessons-list" id="lessons-list">
             <!-- Dynamic items rendered by app.js -->
           </ul>
-        </div>
-
-        <!-- Sidebar Stats Footer -->
-        <div class="sidebar-footer">
-          <div class="sidebar-progress-card">
-            <div class="progress-card-header">
-              <span class="progress-card-title"><i data-lucide="trophy"></i> Course Progress</span>
-              <span class="progress-card-percent" id="stats-percent-count">0%</span>
-            </div>
-            <div class="progress-bar-track">
-              <div class="progress-bar-fill" id="sidebar-progress-fill" style="width: 0%;"></div>
-            </div>
-            <div class="stats-subrow">
-              <span class="stats-text"><strong id="stats-completed-count">0</strong> of 100 Days Completed</span>
-              <button class="text-btn danger" id="reset-progress-btn">Reset</button>
-            </div>
-          </div>
         </div>
       </aside>
 
